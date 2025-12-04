@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Video Host</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+        player.load();
+        player.play().catch(()=>{});
+      });
+    });
+
+    document.getElementById('fsBtn').addEventListener('click', ()=>{
+      if (!document.fullscreenElement) {
+        player.requestFullscreen().catch(()=>{});
+      } else {
+        document.exitFullscreen().catch(()=>{});
+      }
+    });
+
+    document.getElementById('speed').addEventListener('change', (e)=>{
+      player.playbackRate = parseFloat(e.target.value);
+    });
+
+    // Theme handling: default to dark, allow toggle and persist in localStorage
+    const themeToggle = document.getElementById('themeToggle');
+    function applyTheme(t){
+      if(t === 'light') document.documentElement.setAttribute('data-theme','light');
+      else document.documentElement.removeAttribute('data-theme');
+    }
+    const saved = localStorage.getItem('theme') || 'dark';
+    applyTheme(saved);
+    themeToggle.textContent = saved === 'light' ? 'Light' : 'Dark';
+    themeToggle.addEventListener('click', ()=>{
+      const current = localStorage.getItem('theme') || 'dark';
+      const next = current === 'light' ? 'dark' : 'light';
+      localStorage.setItem('theme', next);
+      applyTheme(next);
+      themeToggle.textContent = next === 'light' ? 'Light' : 'Dark';
+    });
+
+    // Double-click player to fullscreen
+    player.addEventListener('dblclick', ()=>{
+      if (!document.fullscreenElement) player.requestFullscreen().catch(()=>{});
+    });
+  </script>
+</body>
+</html>
